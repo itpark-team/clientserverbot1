@@ -10,8 +10,7 @@ import java.util.Date;
 import java.util.Random;
 
 public class Server {
-    static void Log(String msg)
-    {
+    static void Log(String msg) {
         System.out.println(msg);
     }
 
@@ -19,8 +18,15 @@ public class Server {
 
         System.in.read();
 
-        ServerSocket listener = new ServerSocket(37152,12,InetAddress.getByName("127.0.0.1"));
-        Log("server is started");
+        ServerSocket listener = null;
+
+        try {
+            listener = new ServerSocket(37152, 12, InetAddress.getByName("127.0.0.1"));
+            Log("server is started");
+        } catch (Exception e) {
+            Log("error! server is NOT started");
+            return;
+        }
 
         Socket talking = listener.accept();
         Log("client is connected");
@@ -34,13 +40,13 @@ public class Server {
 
         Random rand = new Random();
 
-        while (true){
+        while (true) {
             String request = in.readUTF();
-            Log("from client: "+request);
+            Log("from client: " + request);
 
             String response = "";
 
-            switch (request){
+            switch (request) {
                 case "hello":
                     response = "hi";
                     break;
@@ -57,7 +63,7 @@ public class Server {
                     response = "/date = show current date \n /time = show current time \n /s_name = show server name \n /help = show command list \n /rnd = show random number from 0 to 10";
                     break;
                 case "/rnd":
-                    response = String.valueOf((int)(Math.random() * (10 - 0 + 1) + 0));
+                    response = String.valueOf((int) (Math.random() * (10 - 0 + 1) + 0));
                     break;
                 case "/gamemode 1":
                     response = "set own gamemode to creative";
@@ -71,7 +77,7 @@ public class Server {
             }
 
             out.writeUTF(response);
-            Log("to client: "+response);
+            Log("to client: " + response);
             out.flush();
         }
 
